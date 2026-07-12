@@ -1,0 +1,30 @@
+{
+  "name": "paysphere-backend",
+  "version": "1.0.0",
+  "description": "PaySphere — Backend microservices (7 independent services + shared library)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd shared && npm install && for dir in services/*; do (cd \"$dir\" && npm install); done",
+    "dev:auth": "cd services/auth-service && npm run dev",
+    "dev:user": "cd services/user-service && npm run dev",
+    "dev:payment": "cd services/payment-service && npm run dev",
+    "dev:transaction": "cd services/transaction-service && npm run dev",
+    "dev:wallet": "cd services/wallet-service && npm run dev",
+    "dev:notification": "cd services/notification-service && npm run dev",
+    "dev:billing": "cd services/billing-service && npm run dev",
+    "dev:all": "concurrently \"npm:dev:*\"",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema prisma/schema.prisma",
+    "prisma:seed": "node prisma/seed.js",
+    "docker:up": "cd deploy/docker && docker-compose up --build",
+    "docker:down": "cd deploy/docker && docker-compose down",
+    "deploy:service": "./deploy/scripts/deploy-service.sh",
+    "deploy:all": "./deploy/scripts/deploy-all.sh"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prisma": "^5.10.0"
+  }
+}

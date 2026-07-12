@@ -13,6 +13,10 @@ variable "lb_subnets" {
   type        = list(string)
 }
 
+variable "enable_deletion_protection" {
+  type    = bool
+  default = false
+}
 
 variable "logs_enabled" {
   description  = ""
@@ -113,41 +117,11 @@ variable "rate_url_rules" {
 
   default = [
     {
-      name                  = "login"
-      priority              = 5
-      search_string         = "/login"
-      positional_constraint = "STARTS_WITH"
-      limit                 = 15
-      window                = 300
-      action                = "block"
-    },
-
-    {
-      name                  = "register"
-      priority              = 6
-      search_string         = "/register"
-      positional_constraint = "STARTS_WITH"
-      limit                 = 10
-      window                = 300
-      action                = "block"
-    },
-
-    {
-      name                  = "otp"
-      priority              = 7
-      search_string         = "/api/otp"
-      positional_constraint = "STARTS_WITH"
-      limit                 = 5
-      window                = 300
-      action                = "block"
-    },
-
-    {
       name                  = "password-reset"
       priority              = 8
       search_string         = "/api/password-reset"
       positional_constraint = "STARTS_WITH"
-      limit                 = 5
+      limit                 = 30
       window                = 300
       action                = "block"
     },
@@ -157,7 +131,7 @@ variable "rate_url_rules" {
       priority              = 9
       search_string         = "/api/payment"
       positional_constraint = "STARTS_WITH"
-      limit                 = 8
+      limit                 = 13
       window                = 300
       action                = "block"
     },
@@ -173,16 +147,6 @@ variable "rate_url_rules" {
     },
 
     {
-      name                  = "static-assets"
-      priority              = 11
-      search_string         = "/assets"
-      positional_constraint = "STARTS_WITH"
-      limit                 = 2000
-      window                = 300
-      action                = "count"
-    },
-
-    {
       name                  = "rate-api-all"
       priority              = 12
       search_string         = "test"
@@ -193,16 +157,6 @@ variable "rate_url_rules" {
       action                = "count"
     },
 
-
-    {
-      name                  = "health-check"
-      priority              = 13
-      search_string         = "/health"
-      positional_constraint = "EXACTLY"
-      limit                 = 300
-      window                = 300
-      action                = "allow"
-    }
   ]
 }
 
@@ -283,29 +237,6 @@ variable "rate_url_rules_with_or" {
       ]
     },
 
-  # AI Group
-    {
-      name     = "ai-endpoints"
-      metric_name = "ai-endpoints"
-      priority = 17
-      limit    = 50
-      action   = "block"
-
-      or_statements = [
-        {
-          search_string         = "/api/chat"
-          positional_constraint = "STARTS_WITH"
-        },
-        {
-          search_string         = "/api/completion"
-          positional_constraint = "STARTS_WITH"
-        },
-        {
-          search_string         = "/api/generate"
-          positional_constraint = "STARTS_WITH"
-        }
-      ]
-    }
   ]
 }
 
@@ -459,4 +390,8 @@ variable "port" {
 variable "vpc_id" {
   type        = string
   description = "VPC ID where resources (ALB, target groups, etc.) will be created"
+}
+
+variable "alarm_sns_topic_arn" {
+  type = string
 }

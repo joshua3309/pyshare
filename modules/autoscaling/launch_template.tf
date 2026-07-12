@@ -4,11 +4,11 @@ resource "aws_launch_template" "ecs" {
   instance_type = var.instance_type
 
   iam_instance_profile {
-    name = var.aws_iam_instance_profile_name
+    name = var.iam_instance_profile_name
   }
 
 
-  key_name = var.key["name"]
+  key_name = var.key.name
   depends_on = [aws_key_pair.terraform]
 
   network_interfaces {
@@ -18,7 +18,7 @@ resource "aws_launch_template" "ecs" {
 
   user_data = base64encode(<<-EOT
   #!/bin/bash
-  echo ECS_CLUSTER=${var.ecs_cluster_name} >> /etc/ecs/ecs.config
+  echo ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config
   EOT
   )
 

@@ -15,11 +15,11 @@ variable "container_port" {
 }
 
 variable "cpu" {
-  type = string
+  type = number
 }
 
 variable "memory" {
-  type = string
+  type = number
 }
 
 variable "requires_compatibilities" {
@@ -35,16 +35,23 @@ variable "task_role_arn" {
 }
 
 variable "environment_variables" {
-  type    = map(string)
-  default = {}
+  description = "Non-sensitive environment variables"
+  type        = map(string)
+  default     = {}
 }
 
 variable "secrets" {
-  type    = any
-  default = []
+  description = "Secrets Manager ARNs"
+  type        = map(string)
+  default     = {}
 }
 
 variable "tags" {
   type    = map(string)
   default = {}
+}
+
+variable "log_group_name" {
+  description = "CloudWatch Log Group name"
+  type        = string
 }

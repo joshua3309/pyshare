@@ -15,7 +15,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
     LoadBalancer = aws_lb.this.arn_suffix
   }
   treat_missing_data = "notBreaching"
-  alarm_actions      = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 resource "aws_cloudwatch_metric_alarm" "target_5xx" {
   alarm_name          = "${var.env}-${var.project}-microservices-target-5xx"
@@ -31,7 +31,7 @@ resource "aws_cloudwatch_metric_alarm" "target_5xx" {
     LoadBalancer = aws_lb.this.arn_suffix
   }
   treat_missing_data = "notBreaching"
-  alarm_actions      = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "posts_unhealthy_hosts" {
@@ -52,9 +52,7 @@ resource "aws_cloudwatch_metric_alarm" "posts_unhealthy_hosts" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "threads_unhealthy_hosts" {
@@ -75,9 +73,7 @@ resource "aws_cloudwatch_metric_alarm" "threads_unhealthy_hosts" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "users_unhealthy_hosts" {
@@ -98,9 +94,7 @@ resource "aws_cloudwatch_metric_alarm" "users_unhealthy_hosts" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "threads_high_response_time" {
@@ -121,9 +115,7 @@ resource "aws_cloudwatch_metric_alarm" "threads_high_response_time" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 
@@ -145,9 +137,7 @@ resource "aws_cloudwatch_metric_alarm" "posts_high_response_time" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 
@@ -169,9 +159,7 @@ resource "aws_cloudwatch_metric_alarm" "users_high_response_time" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "rejected_connections" {
@@ -191,7 +179,5 @@ resource "aws_cloudwatch_metric_alarm" "rejected_connections" {
 
   treat_missing_data = "notBreaching"
 
-  alarm_actions = [
-    data.aws_sns_topic.alarm_topic.arn
-  ]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }

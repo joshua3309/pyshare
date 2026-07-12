@@ -15,7 +15,7 @@ resource "aws_cloudwatch_metric_alarm" "waf_potential_attack" {
     WebACL = aws_wafv2_web_acl.aws_managed_webacl.name
     Rule   = "ALL"
   }
-  alarm_actions = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
   tags          = local.common_tags
 }
 
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "waf_rate_subdomain" {
     WebACL = aws_wafv2_web_acl.aws_managed_webacl.name
     Rule   = each.key
   }
-  alarm_actions = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
   tags          = local.common_tags
 }
 
@@ -65,7 +65,7 @@ resource "aws_cloudwatch_metric_alarm" "waf-rate-url" {
     WebACL = aws_wafv2_web_acl.aws_managed_webacl.name
     Rule   = var.rate_url_rules[count.index].name
   }
-  alarm_actions = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
   tags          = local.common_tags
 }
 
@@ -87,6 +87,6 @@ resource "aws_cloudwatch_metric_alarm" "waf_managed-rules" {
     WebACL = aws_wafv2_web_acl.aws_managed_webacl.name
     Rule   = each.key
   }
-  alarm_actions = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
   tags          = local.common_tags
 }

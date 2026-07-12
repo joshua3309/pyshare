@@ -17,6 +17,6 @@ module "pre_init" {
   project    = var.project
   region     = var.region
 
-  bucket_name = "microservice-security-web-waf"
+  bucket_name = "terraform-state-033481624720"
   table_name  = "microservice-security-web-waf"
 }

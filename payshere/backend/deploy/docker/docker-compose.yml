@@ -1,0 +1,192 @@
+# ─── PaySphere — Docker Compose for Local Development ─────────────────────
+#
+# Runs all 7 microservices + PostgreSQL independently.
+# Each service can be scaled, restarted, and deployed independently.
+#
+# Usage:
+#   docker-compose up              # Start all services
+#   docker-compose up auth-service # Start only auth-service
+#   docker-compose up --scale payment-service=3  # Scale payment-service to 3 instances
+#
+# In production, each service runs as an ECS task behind the ALB.
+
+version: '3.8'
+
+services:
+  # ─── Database ──────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: paysphere-db
+    environment:
+      POSTGRES_USER: paysphere
+      POSTGRES_PASSWORD: paysphere_dev
+      POSTGRES_DB: paysphere
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U paysphere']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Auth Service (port 4001) ───────────────────────────────────────────
+  auth-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/auth-service.Dockerfile
+    container_name: paysphere-auth
+    ports:
+      - '4001:4001'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=auth-service
+      - PORT=4001
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - JWT_SERVICE_SECRET=dev-service-secret-change-in-production
+      - SERVICE_WALLET_URL=http://wallet-service:4005
+      - SERVICE_NOTIFICATION_URL=http://notification-service:4006
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── User Service (port 4002) ───────────────────────────────────────────
+  user-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/user-service.Dockerfile
+    container_name: paysphere-user
+    ports:
+      - '4002:4002'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=user-service
+      - PORT=4002
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - JWT_SERVICE_SECRET=dev-service-secret-change-in-production
+      - SERVICE_NOTIFICATION_URL=http://notification-service:4006
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Payment Service (port 4003) ────────────────────────────────────────
+  payment-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/payment-service.Dockerfile
+    container_name: paysphere-payment
+    ports:
+      - '4003:4003'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=payment-service
+      - PORT=4003
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - JWT_SERVICE_SECRET=dev-service-secret-change-in-production
+      - SERVICE_WALLET_URL=http://wallet-service:4005
+      - SERVICE_NOTIFICATION_URL=http://notification-service:4006
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Transaction Service (port 4004) ────────────────────────────────────
+  transaction-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/transaction-service.Dockerfile
+    container_name: paysphere-transaction
+    ports:
+      - '4004:4004'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=transaction-service
+      - PORT=4004
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Wallet Service (port 4005) ─────────────────────────────────────────
+  wallet-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/wallet-service.Dockerfile
+    container_name: paysphere-wallet
+    ports:
+      - '4005:4005'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=wallet-service
+      - PORT=4005
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - JWT_SERVICE_SECRET=dev-service-secret-change-in-production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Notification Service (port 4006) ──────────────────────────────────
+  notification-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/notification-service.Dockerfile
+    container_name: paysphere-notification
+    ports:
+      - '4006:4006'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=notification-service
+      - PORT=4006
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - JWT_SERVICE_SECRET=dev-service-secret-change-in-production
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Billing Service (port 4007) ────────────────────────────────────────
+  billing-service:
+    build:
+      context: ..
+      dockerfile: deploy/docker/billing-service.Dockerfile
+    container_name: paysphere-billing
+    ports:
+      - '4007:4007'
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=billing-service
+      - PORT=4007
+      - DATABASE_URL=postgresql://paysphere:paysphere_dev@postgres:5432/paysphere?schema=public
+      - JWT_ACCESS_SECRET=dev-access-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
+      - JWT_SERVICE_SECRET=dev-service-secret-change-in-production
+      - SERVICE_NOTIFICATION_URL=http://notification-service:4006
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

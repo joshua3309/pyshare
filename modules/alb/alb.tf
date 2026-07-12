@@ -5,8 +5,13 @@ resource "aws_lb" "this" {
   security_groups    = [var.lb_sg]
   subnets            = var.lb_subnets
   enable_http2       = true
-  ip_address_type    = "dualstack"
-  enable_deletion_protection = var.env == "prod"
+  ip_address_type    = "ipv4"
+  enable_deletion_protection = var.enable_deletion_protection
+
+  depends_on = [
+    aws_s3_bucket_policy.alb_logs
+  ]
+
 
   access_logs {
     enabled = var.logs_enabled

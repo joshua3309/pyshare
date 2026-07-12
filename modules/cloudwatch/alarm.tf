@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "auth-error" {
   treat_missing_data        = "notBreaching"
   insufficient_data_actions = []
   alarm_description         = "Triggers when authentication errors exceed threshold"
-  alarm_actions             = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "validation-error" {
@@ -25,7 +25,7 @@ resource "aws_cloudwatch_metric_alarm" "validation-error" {
   treat_missing_data        = "notBreaching"
   insufficient_data_actions = []
   alarm_description         = "Triggers when authentication errors exceed threshold"
-  alarm_actions             = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "not-found" {
@@ -40,7 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "not-found" {
   threshold                 = 10
   insufficient_data_actions = []
   alarm_description         = "Triggers when authentication errors exceed threshold"
-  alarm_actions             = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "server-error" {
@@ -55,5 +55,5 @@ resource "aws_cloudwatch_metric_alarm" "server-error" {
   treat_missing_data        = "notBreaching"
   insufficient_data_actions = []
   alarm_description         = "Triggers when authentication errors exceed threshold"
-  alarm_actions             = [data.aws_sns_topic.alarm_topic.arn]
+  alarm_actions = [var.alarm_sns_topic_arn]
 }

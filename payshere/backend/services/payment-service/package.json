@@ -1,0 +1,23 @@
+{
+  "name": "@paysphere/payment-service",
+  "version": "1.0.0",
+  "description": "PaySphere Payment Service — Send money, Receive money, Bill payments, Card payments",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@paysphere/shared": "file:../../shared",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "stripe": "^14.14.0",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

@@ -26,19 +26,23 @@ resource "aws_ecs_task_definition" "this" {
       ]
 
       environment = [
-        for k, v in var.environment_variables :
-        {
+        for k, v in var.environment_variables : {
           name  = k
           value = v
         }
       ]
 
-      secrets = var.secrets
+      secrets = [
+        for k, v in var.secrets : {
+          name      = k
+          valueFrom = v
+        }
+      ]
 
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs_cloudwatch.name
+          "awslogs-group"         = var.log_group_name
           "awslogs-region"        = var.region
           "awslogs-stream-prefix" = "posts"
         }

@@ -3,3 +3,8 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "container_port" {
+  description = "port the container listen on"
+  type = number
+  default = 3000
+} 

@@ -8,7 +8,7 @@ resource "aws_wafv2_web_acl" "aws_managed_webacl" {
   }
 
   rule {
-    name     = "${var.env}-{var.project}-ip-allowed"
+    name     = "${var.env}-${var.project}-ip-allowed"
     priority = 0
 
     action {
@@ -51,7 +51,7 @@ resource "aws_wafv2_web_acl" "aws_managed_webacl" {
   }
 
   rule {
-    name     = "${var.env}-{var.project}-ip-to-be-block"
+    name     = "${var.env}-${var.project}-ip-to-be-block"
     priority = 1
 
     action {
@@ -137,7 +137,7 @@ resource "aws_wafv2_web_acl" "aws_managed_webacl" {
             byte_match_statement {
               
               positional_constraint = "STARTS_WITH"
-              search_string         = rule.value.subdormain
+              search_string         = rule.value.domain
 
               field_to_match {
                 single_header {
@@ -251,7 +251,7 @@ resource "aws_wafv2_web_acl" "aws_managed_webacl" {
           scope_down_statement {
             or_statement {
               dynamic "statement" {
-                for_each = rule.value.or_statement
+                for_each = rule.value.or_statements
                 content {
                   byte_match_statement {
                     positional_constraint = statement.value.positional_constraint

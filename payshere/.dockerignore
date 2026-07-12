@@ -1,0 +1,10 @@
+node_modules
+**/.next
+**/.git
+**/Dockerfile
+.gitignore
+npm-debug.log*
+.DS_Store
+backend/node_modules
+apps/*/node_modules
+packages/*/node_modules

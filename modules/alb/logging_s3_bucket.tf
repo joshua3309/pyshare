@@ -48,7 +48,10 @@ resource "aws_s3_bucket_policy" "alb_logs" {
         Effect = "Allow"
 
         Principal = {
-          Service = "delivery.logs.amazonaws.com"
+          Service = [
+            "delivery.logs.amazonaws.com",
+            "logdelivery.elasticloadbalancing.amazonaws.com"
+          ]
         }
 
         Action = "s3:PutObject"
@@ -67,7 +70,10 @@ resource "aws_s3_bucket_policy" "alb_logs" {
         Effect = "Allow"
 
         Principal = {
-          Service = "delivery.logs.amazonaws.com"
+          Service = [
+            "delivery.logs.amazonaws.com",
+            "logdelivery.elasticloadbalancing.amazonaws.com"
+          ]          
         }
 
         Action = "s3:GetBucketAcl"

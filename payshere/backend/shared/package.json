@@ -1,0 +1,27 @@
+{
+  "name": "@paysphere/shared",
+  "version": "1.0.0",
+  "description": "Shared library for PaySphere microservices — Prisma client, JWT utils, middleware, error handling, validation",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./prisma": "./src/config/prisma.js",
+    "./jwt": "./src/utils/jwt.js",
+    "./logger": "./src/utils/logger.js",
+    "./errors": "./src/middleware/errorHandler.js",
+    "./auth": "./src/middleware/auth.js",
+    "./http": "./src/utils/httpClient.js",
+    "./health": "./src/middleware/health.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "express": "^4.18.2"
+  }
+}
