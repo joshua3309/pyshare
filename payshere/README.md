@@ -4,6 +4,26 @@ A production-grade, full-stack fintech platform built with a **true microservice
 
 ## Architecture Overview
 
+---
+                    ┌──────────────────────────────────────────────────┐
+                    │              AWS ALB (path-based routing)          │
+                    │   :443 (HTTPS) → :80 (HTTP redirect)              │
+                    └──────┬──────────┬──────────┬──────────────────────┘
+                           │          │          │
+              /admin/*     │  /api/*  │  /*      │
+                           ▼          ▼          ▼
+                  ┌────────────┐  ┌─────────┐  ┌────────────┐
+                  │ admin      │  │ backend │  │ web        │
+                  │ ECS:3001   │  │ ECS     │  │ ECS:3000   │
+                  │ Next.js    │  │ 7 svcs  │  │ Next.js    │
+                  └────────────┘  └─────────┘  └────────────┘
+                                         │
+                                  ┌──────┴──────┐
+                                  │ AWS RDS     │
+                                  │ PostgreSQL  │
+                                  └─────────────┘
+```
+
 ```
                          ┌─────────────────────────────────┐
                          │         AWS ALB (HTTPS)          │
