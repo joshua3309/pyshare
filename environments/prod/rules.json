@@ -1,0 +1,392 @@
+{
+    "Rules": [
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/add3480a51cef973",
+            "Priority": "1",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/web-tg/4f15599c3400f1fd",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/web-tg/4f15599c3400f1fd",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/fecef5f3fbfc79c1",
+            "Priority": "2",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/web-tg/4f15599c3400f1fd",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/web-tg/4f15599c3400f1fd",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/e7625fb638909836",
+            "Priority": "3",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/admin/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/admin/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/admin-tg/e817a58f3cb1b00d",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/admin-tg/e817a58f3cb1b00d",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/358f5ba8dd179643",
+            "Priority": "10",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/auth/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/auth/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/auth-tg/586e4d66093a2e24",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/auth-tg/586e4d66093a2e24",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/c27f1429939d4544",
+            "Priority": "11",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/payments/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/payments/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/payment-tg/abdff3d4de46c156",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/payment-tg/abdff3d4de46c156",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/f7c384fa54dd25e8",
+            "Priority": "12",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/users/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/users/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/user-tg/547b7e0d32da42ad",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/user-tg/547b7e0d32da42ad",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/914e54cf4adc27af",
+            "Priority": "13",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/transactions/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/transactions/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/transaction-tg/dc05e8c9a85d6f89",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/transaction-tg/dc05e8c9a85d6f89",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/cd0d7af8b84ef56d",
+            "Priority": "14",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/wallet/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/wallet/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/wallet-tg/fe43c04a53c0dc59",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/wallet-tg/fe43c04a53c0dc59",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/0008d1a17779746c",
+            "Priority": "15",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/notifications/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/notifications/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/notification-tg/ddb51f6a567af2e3",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/notification-tg/ddb51f6a567af2e3",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/addafd363dcd25ef",
+            "Priority": "16",
+            "Conditions": [
+                {
+                    "Field": "path-pattern",
+                    "Values": [
+                        "/api/billing/*"
+                    ],
+                    "PathPatternConfig": {
+                        "Values": [
+                            "/api/billing/*"
+                        ]
+                    }
+                }
+            ],
+            "Actions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/billing-tg/84156a6c5369b3d9",
+                    "Order": 1,
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:targetgroup/billing-tg/84156a6c5369b3d9",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Transforms": []
+        },
+        {
+            "RuleArn": "arn:aws:elasticloadbalancing:us-east-1:033481624720:listener-rule/app/payshere-prod-test/798f1a8a56283901/f9ae9774a160a320/de823c10b8ebd50d",
+            "Priority": "default",
+            "Conditions": [],
+            "Actions": [
+                {
+                    "Type": "fixed-response",
+                    "Order": 1,
+                    "FixedResponseConfig": {
+                        "MessageBody": "Access denied",
+                        "StatusCode": "403",
+                        "ContentType": "text/plain"
+                    }
+                }
+            ],
+            "IsDefault": true,
+            "Transforms": []
+        }
+    ]
+}

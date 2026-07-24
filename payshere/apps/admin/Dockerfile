@@ -13,26 +13,29 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-COPY package.json ./
+# Copy workspace manifests
+COPY package.json package-lock.json ./
 COPY apps/admin/package.json ./apps/admin/
 COPY packages/ui/package.json ./packages/ui/
 
-RUN npm install --workspace admin --workspace @workspace/ui --omit=dev
+# Install ALL dependencies (builder needs devDependencies)
+RUN npm ci
 
-# ─── Stage 2: Builder ──────────────────────────────────────────────────────
+# ─── Stage 2: Builder ─────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Reuse installed dependencies
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/admin/node_modules ./apps/admin/node_modules
-COPY --from=deps /app/packages/ui/node_modules ./packages/ui/node_modules
 
-COPY package.json ./
-COPY apps/admin/ ./apps/admin/
-COPY packages/ui/ ./packages/ui/
+# Copy the entire repository
+COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
+
 RUN npm run build --workspace admin
+
+
 
 # ─── Stage 3: Production Runner ───────────────────────────────────────────
 FROM node:20-alpine AS runner
@@ -47,7 +50,6 @@ RUN addgroup --system --gid 1001 nodejs \
 
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next ./apps/admin/.next
-COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/public ./apps/admin/public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/package.json ./apps/admin/package.json
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/next.config.mjs ./apps/admin/next.config.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json

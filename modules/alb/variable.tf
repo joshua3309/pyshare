@@ -70,36 +70,6 @@ variable "custom_waf_rules" {
   default     = true
 }
 
-variable "rate_subdomain_rules" {
-  type = list(object({
-    domain = string
-    action    = string
-    limit     = number
-    window    = number
-    name      = string
-    priority  = number
-  }))
-
-  default = [
-    {
-      name      = "rate-admin-subdomain-limit"
-      domain    = "admin.downloadloadbriefly.shop"
-      action    = "block"
-      limit     = 200
-      window    = 300
-      priority  = 3
-    },
-    {
-      name     = "rate-api-subdomain-limit"
-      priority = 4
-      domain   = "api.downloadloadbriefly.shop"
-      limit    = 200
-      window   = 300
-      action   = "count"
-    }
-  ]
-}
-
 
 variable "rate_url_rules" {
   description = "Path based rate limiting rules"
@@ -117,11 +87,11 @@ variable "rate_url_rules" {
 
   default = [
     {
-      name                  = "password-reset"
+      name                  = "wallet"
       priority              = 8
-      search_string         = "/api/password-reset"
+      search_string         = "/api/wallet/"
       positional_constraint = "STARTS_WITH"
-      limit                 = 30
+      limit                 = 90
       window                = 300
       action                = "block"
     },
@@ -129,7 +99,7 @@ variable "rate_url_rules" {
     {
       name                  = "payment"
       priority              = 9
-      search_string         = "/api/payment"
+      search_string         = "/api/payments/"
       positional_constraint = "STARTS_WITH"
       limit                 = 13
       window                = 300
@@ -147,9 +117,9 @@ variable "rate_url_rules" {
     },
 
     {
-      name                  = "rate-api-all"
+      name                  = "billing"
       priority              = 12
-      search_string         = "test"
+      search_string         = "/api/billing/"
       metric_name           = "rate-api-all"
       positional_constraint = "CONTAINS"
       limit                 = 100
@@ -171,24 +141,6 @@ variable "rate_url_rules_with_or" {
   }))
 
   default = [
-    {
-      action      = "block"
-      limit       = 100
-      metric_name = "rate-or-condition-example"
-      name        = "rate-or-condition-example"
-      priority    = 14
-      or_statements = [
-        {
-          positional_constraint = "STARTS_WITH"
-          search_string         = "test"
-        },
-        {
-          positional_constraint = "CONTAINS"
-          search_string         = "favicon"
-        }
-      ]
-    },
-
     # Authentication Group
     {
       name     = "auth-endpoints"
@@ -203,7 +155,19 @@ variable "rate_url_rules_with_or" {
           positional_constraint = "STARTS_WITH"
         },
         {
+          search_string         = "/reset-password"
+          positional_constraint = "STARTS_WITH"
+        },
+        {
+          search_string         = "/refresh-token"
+          positional_constraint = "STARTS_WITH"
+        },
+        {
           search_string         = "/register"
+          positional_constraint = "STARTS_WITH"
+        },
+        {
+          search_string = "/logout"
           positional_constraint = "STARTS_WITH"
         },
         {
@@ -214,6 +178,7 @@ variable "rate_url_rules_with_or" {
     },
 
   # OTP Group
+/*
     {
       name     = "otp-endpoints"
       metric_name = "otp-endpoints"
@@ -236,7 +201,7 @@ variable "rate_url_rules_with_or" {
         }
       ]
     },
-
+*/
   ]
 }
 
@@ -381,10 +346,58 @@ variable "alarm_sns_topic_name" {
   type = string
 }
 
-variable "port" {
-  description = "Port on which the application listens (e.g., 3000 for Node.js, 80 for HTTP)"
+variable "web_port" {
+  description = "Port on which the web application listens (e.g., 3000 for Node.js, 80 for HTTP)"
   type        = number
   default     = 3000
+}
+
+variable "admin_port" {
+  description = "Port on which the admin application listens (e.g., 3001 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 3001
+}
+
+variable "auth_port" {
+  description = "Port on which the auth application listens (e.g., 4001 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4001
+}
+
+variable "user_port" {
+  description = "Port on which the user application listens (e.g., 4002 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4002
+}
+
+variable "payment_port" {
+  description = "Port on which the payment application listens (e.g., 4003 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4003
+}
+
+variable "transaction_port" {
+  description = "Port on which the transaction application listens (e.g., 4004 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4004
+}
+
+variable "wallet_port" {
+  description = "Port on which the wallet application listens (e.g., 4005 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4005
+}
+
+variable "notification_port" {
+  description = "Port on which the notification application listens (e.g., 4006 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4006
+}
+
+variable "billing_port" {
+  description = "Port on which the billing application listens (e.g., 4007 for Node.js, 80 for HTTP)"
+  type        = number
+  default     = 4007
 }
 
 variable "vpc_id" {

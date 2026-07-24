@@ -4,6 +4,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../shared/node_modules/.prisma/client"
 }
 
 datasource db {
@@ -33,6 +34,7 @@ model User {
   wallet        Wallet?
   transactions  Transaction[]
   invoices      Invoice[]
+  subscriptions Subscription[]
   notifications Notification[]
   refreshTokens RefreshToken[]
   apiKeys       ApiKey[]

@@ -1,88 +1,210 @@
-#!/bin/bash
-# ─── PaySphere — Deploy a Single Microservice to AWS ECS ──────────────────
-#
-# Usage: ./deploy/scripts/deploy-service.sh <service-name> [tag]
-#
-# This script builds, pushes, and deploys ONE microservice independently.
-# Other services are not affected — zero downtime for the rest of the platform.
-#
-# Prerequisites:
-#   - AWS CLI configured with ECR/ECS permissions
-#   - Docker installed
-#   - ECR repositories created (see deploy/aws/ecs.tf)
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-SERVICE_NAME="${1:?Usage: deploy-service.sh <service-name> [tag]}"
+############################################################
+# PaySphere Deployment Script v1
+#
+# Builds and pushes ONE service to ECR.
+#
+# Usage:
+#
+# ./deploy/scripts/deploy-service.sh auth v1.0.0
+# ./deploy/scripts/deploy-service.sh user latest
+# ./deploy/scripts/deploy-service.sh web v2.0.0
+#
+############################################################
+
+SERVICE="${1:?Usage: deploy-service.sh <service> [tag]}"
 TAG="${2:-latest}"
-AWS_REGION="${AWS_REGION:-us-east-1}"
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-ECR_URI="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-CLUSTER_NAME="paysphere-cluster"
 
-echo "━━━ Deploying ${SERVICE_NAME} (tag: ${TAG}) ━━━"
+############################################################
+# AWS
+############################################################
 
-# ─── 1. Authenticate Docker to ECR ───────────────────────────────────────
-echo "▸ Authenticating to ECR..."
-aws ecr get-login-password --region "${AWS_REGION}" | \
-  docker login --username AWS --password-stdin "${ECR_URI}"
+AWS_REGION="us-east-1"
+ACCOUNT_ID="033481624720"
 
-# ─── 2. Build Docker Image ───────────────────────────────────────────────
-echo "▸ Building Docker image..."
-DOCKERFILE="deploy/docker/${SERVICE_NAME}.Dockerfile"
-if [ ! -f "../${DOCKERFILE}" ]; then
-  echo "✗ Dockerfile not found: ${DOCKERFILE}"
-  exit 1
+############################################################
+# Directories
+############################################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# payshere/backend
+BACKEND_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# payshere
+PROJECT_DIR="$(cd "$BACKEND_DIR/.." && pwd)"
+
+############################################################
+# Repository / Dockerfile
+############################################################
+
+case "$SERVICE" in
+
+    auth)
+        REPOSITORY="paysphere-auth"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/auth-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    user)
+        REPOSITORY="paysphere-user"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/user-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    payment)
+        REPOSITORY="paysphere-payment"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/payment-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    transaction)
+        REPOSITORY="paysphere-transaction"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/transaction-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    wallet)
+        REPOSITORY="paysphere-wallet"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/wallet-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    notification)
+        REPOSITORY="paysphere-notification"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/notification-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    billing)
+        REPOSITORY="paysphere-billing"
+        DOCKERFILE="$BACKEND_DIR/deploy/docker/billing-service.Dockerfile"
+        BUILD_CONTEXT="$BACKEND_DIR"
+        ;;
+
+    web)
+        REPOSITORY="paysphere-web"
+        DOCKERFILE="$PROJECT_DIR/apps/web/Dockerfile"
+        BUILD_CONTEXT="$PROJECT_DIR"
+        ;;
+
+    admin)
+        REPOSITORY="paysphere-admin"
+        DOCKERFILE="$PROJECT_DIR/apps/admin/Dockerfile"
+        BUILD_CONTEXT="$PROJECT_DIR"
+        ;;
+
+    *)
+        echo
+        echo "Unknown service: $SERVICE"
+        exit 1
+        ;;
+esac
+
+############################################################
+# Checks
+############################################################
+
+if [[ ! -f "$DOCKERFILE" ]]; then
+    echo
+    echo "Dockerfile not found:"
+    echo "$DOCKERFILE"
+    exit 1
 fi
 
+if ! docker info >/dev/null 2>&1; then
+    echo
+    echo "Docker daemon is not running."
+    exit 1
+fi
+
+aws ecr describe-repositories \
+    --repository-names "$REPOSITORY" \
+    --region "$AWS_REGION" >/dev/null
+
+############################################################
+# Image
+############################################################
+
+IMAGE="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPOSITORY}:${TAG}"
+
+echo
+echo "======================================================"
+echo "PaySphere Deployment"
+echo "======================================================"
+echo "Service      : $SERVICE"
+echo "Repository   : $REPOSITORY"
+echo "Tag          : $TAG"
+echo "Dockerfile   : $DOCKERFILE"
+echo "Context      : $BUILD_CONTEXT"
+echo "Image        : $IMAGE"
+echo "======================================================"
+echo
+
+############################################################
+# Login
+############################################################
+
+echo "Logging into Amazon ECR..."
+
+aws ecr get-login-password \
+    --region "$AWS_REGION" \
+| docker login \
+    --username AWS \
+    --password-stdin "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+############################################################
+# Build
+############################################################
+
+echo
+echo "Building Docker image..."
+echo
+
 docker build \
-  -t "${ECR_URI}/paysphere/${SERVICE_NAME}:${TAG}" \
-  -f "../${DOCKERFILE}" \
-  ..
+    -t "$IMAGE" \
+    -f "$DOCKERFILE" \
+    "$BUILD_CONTEXT"
 
-# ─── 3. Push to ECR ──────────────────────────────────────────────────────
-echo "▸ Pushing to ECR..."
-docker push "${ECR_URI}/paysphere/${SERVICE_NAME}:${TAG}"
+############################################################
+# Push
+############################################################
 
-# ─── 4. Update ECS Task Definition ───────────────────────────────────────
-echo "▸ Updating ECS task definition..."
-TASK_FAMILY="paysphere-${SERVICE_NAME}"
-CURRENT_TASK=$(aws ecs describe-task-definition \
-  --task-definition "${TASK_FAMILY}" \
-  --region "${AWS_REGION}" \
-  --query 'taskDefinition' \
-  --output json)
+echo
+echo "Pushing image..."
+echo
 
-# Update image in task definition
-NEW_TASK=$(echo "${CURRENT_TASK}" | \
-  jq --arg IMAGE "${ECR_URI}/paysphere/${SERVICE_NAME}:${TAG}" \
-  '.containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+docker push "$IMAGE"
 
-NEW_TASK_ARN=$(aws ecs register-task-definition \
-  --cli-input-json "${NEW_TASK}" \
-  --region "${AWS_REGION}" \
-  --query 'taskDefinition.taskDefinitionArn' \
-  --output text)
+############################################################
+# Verify Push
+############################################################
 
-# ─── 5. Update ECS Service (rolling deployment) ──────────────────────────
-echo "▸ Updating ECS service (rolling deployment)..."
-aws ecs update-service \
-  --cluster "${CLUSTER_NAME}" \
-  --service "paysphere-${SERVICE_NAME}" \
-  --task-definition "${NEW_TASK_ARN}" \
-  --region "${AWS_REGION}"
+echo
+echo "Verifying image exists in ECR..."
+echo
 
-# ─── 6. Wait for Deployment ──────────────────────────────────────────────
-echo "▸ Waiting for deployment to stabilize..."
-aws ecs wait services-stable \
-  --cluster "${CLUSTER_NAME}" \
-  --services "paysphere-${SERVICE_NAME}" \
-  --region "${AWS_REGION}"
+aws ecr describe-images \
+    --repository-name "$REPOSITORY" \
+    --region "$AWS_REGION" \
+    --image-ids imageTag="$TAG" >/dev/null
 
-echo "━━━ ${SERVICE_NAME} deployed successfully! ━━━"
-echo ""
-echo "  Service: paysphere-${SERVICE_NAME}"
-echo "  Image:   ${ECR_URI}/paysphere/${SERVICE_NAME}:${TAG}"
-echo "  Status:  STABLE"
-echo ""
-echo "  Other services were not affected."
+############################################################
+# Success
+############################################################
+
+echo
+echo "======================================================"
+echo "Deployment Successful!"
+echo
+echo "Image pushed to:"
+echo
+echo "$IMAGE"
+echo
+echo "Next step:"
+echo "Update prod.auto.tfvars"
+echo "Run terraform apply"
+echo "======================================================"

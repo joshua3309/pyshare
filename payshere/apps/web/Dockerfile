@@ -12,23 +12,21 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/ui/package.json ./packages/ui/
 
-RUN npm install --workspace web --workspace @workspace/ui --omit=dev
+# Install ALL dependencies (builder needs devDependencies)
+RUN npm ci
+
 
 # ─── Stage 2: Builder ──────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=deps /app/packages/ui/node_modules ./packages/ui/node_modules
 
-COPY package.json ./
-COPY apps/web/ ./apps/web/
-COPY packages/ui/ ./packages/ui/
+COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build --workspace web
@@ -46,9 +44,7 @@ RUN addgroup --system --gid 1001 nodejs \
 
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next ./apps/web/.next
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/package.json ./apps/web/package.json
-COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/next.config.mjs ./apps/admin/next.config.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/next.config.mjs ./apps/web/next.config.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/packages/ui/package.json ./packages/ui/package.json

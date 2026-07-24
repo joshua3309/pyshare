@@ -40,11 +40,17 @@ variable "environment_variables" {
   default     = {}
 }
 
-variable "secrets" {
-  description = "Secrets Manager ARNs"
-  type        = map(string)
-  default     = {}
+variable "container_secrets" {
+  description = "Secrets injected into the ECS container"
+
+  type = list(object({
+    name      = string
+    valueFrom = string
+  }))
+
+  default = []
 }
+
 
 variable "tags" {
   type    = map(string)

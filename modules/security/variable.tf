@@ -3,8 +3,18 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "container_port" {
-  description = "port the container listen on"
-  type = number
-  default = 3000
-} 
+variable "container_ports" {
+  type = list(number)
+
+  default = [
+    3000, # web
+    3001, # admin
+    4001, # auth
+    4002, # user
+    4003, # payment
+    4004, # transaction
+    4005, # wallet
+    4006, # notification
+    4007  # billing
+  ]
+}

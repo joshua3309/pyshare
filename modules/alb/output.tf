@@ -14,22 +14,59 @@ output "target_groups" {
   description = "Target groups by service"
 
   value = {
-    posts = {
-      arn        = aws_lb_target_group.posts.arn
-      arn_suffix = aws_lb_target_group.posts.arn_suffix
-      name       = aws_lb_target_group.posts.name
+    user = {
+      arn        = aws_lb_target_group.user.arn
+      arn_suffix = aws_lb_target_group.user.arn_suffix
+      name       = aws_lb_target_group.user.name
     }
 
-    threads = {
-      arn        = aws_lb_target_group.threads.arn
-      arn_suffix = aws_lb_target_group.threads.arn_suffix
-      name       = aws_lb_target_group.threads.name
+    admin = {
+      arn        = aws_lb_target_group.admin.arn
+      arn_suffix = aws_lb_target_group.admin.arn_suffix
+      name       = aws_lb_target_group.admin.name
     }
 
-    users = {
-      arn        = aws_lb_target_group.users.arn
-      arn_suffix = aws_lb_target_group.users.arn_suffix
-      name       = aws_lb_target_group.users.name
+    web = {
+      arn        = aws_lb_target_group.web.arn
+      arn_suffix = aws_lb_target_group.web.arn_suffix
+      name       = aws_lb_target_group.web.name
+    }
+
+    auth = {
+      arn        = aws_lb_target_group.auth.arn
+      arn_suffix = aws_lb_target_group.auth.arn_suffix
+      name       = aws_lb_target_group.auth.name
+    }
+
+    payment = {
+      arn        = aws_lb_target_group.payment.arn
+      arn_suffix = aws_lb_target_group.payment.arn_suffix
+      name       = aws_lb_target_group.payment.name
+    }
+
+    transaction = {
+      arn        = aws_lb_target_group.transaction.arn
+      arn_suffix = aws_lb_target_group.transaction.arn_suffix
+      name       = aws_lb_target_group.transaction.name
+    }
+
+    wallet = {
+      arn        = aws_lb_target_group.wallet.arn
+      arn_suffix = aws_lb_target_group.wallet.arn_suffix
+      name       = aws_lb_target_group.wallet.name
+    }
+
+    notification = {
+      arn        = aws_lb_target_group.notification.arn
+      arn_suffix = aws_lb_target_group.notification.arn_suffix
+      name       = aws_lb_target_group.notification.name
+    }
+
+    billing = {
+      arn        = aws_lb_target_group.billing.arn
+      arn_suffix = aws_lb_target_group.billing.arn_suffix
+      name       = aws_lb_target_group.billing.name
     }
   }
 }
+

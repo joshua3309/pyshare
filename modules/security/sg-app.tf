@@ -13,16 +13,20 @@ resource "aws_security_group" "ecs" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ecs_from_alb" {
+  for_each = {
+    for p in var.container_ports : tostring(p) => p
+  }
+
   security_group_id            = aws_security_group.ecs.id
-  from_port                    = var.container_port
-  ip_protocol                  = "tcp"
-  to_port                      = var.container_port
   referenced_security_group_id = aws_security_group.alb.id
-  
+
+  ip_protocol = "tcp"
+
+  from_port = each.value
+  to_port   = each.value
+
   tags = merge(local.common_tags, {
-    Name        = "${var.env}-${var.project}-ecs-sg-ingress"
-    Tier        = "private"
-    Environment = var.env
+    Name = "${var.env}-${var.project}-ecs-${each.value}"
   })
 }
 

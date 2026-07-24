@@ -19,27 +19,6 @@ resource "aws_cloudwatch_metric_alarm" "waf_potential_attack" {
   tags          = local.common_tags
 }
 
-resource "aws_cloudwatch_metric_alarm" "waf_rate_subdomain" {
-  for_each = { for rule in var.rate_subdomain_rules : rule.name => rule }
-  alarm_name          = format("%s-%s", local.name_prefix, each.key)
-  namespace           = "AWS/WAFV2"
-  #  metric_name         = "CountedRequests"
-  metric_name         = "BlockedRequests"
-  statistic           = "Sum"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  threshold           = each.value.limit
-  datapoints_to_alarm = 1
-  evaluation_periods  = 1
-  period              = 60
-  treat_missing_data  = "notBreaching"
-  dimensions = {
-    Region = var.region
-    WebACL = aws_wafv2_web_acl.aws_managed_webacl.name
-    Rule   = each.key
-  }
-  alarm_actions = [var.alarm_sns_topic_arn]
-  tags          = local.common_tags
-}
 
 resource "aws_cloudwatch_metric_alarm" "waf-rate-url" {
   count = length(var.rate_url_rules)

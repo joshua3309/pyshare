@@ -42,3 +42,13 @@ resource "aws_subnet" "db_private" {
     Environment = var.env
   })
 }
+
+resource "aws_db_subnet_group" "main" {
+  name = "${var.env}-${var.project}-db-subnet-group"
+
+  subnet_ids = aws_subnet.db_private[*].id
+
+  tags = merge(local.common_tags, {
+    Name = "${var.env}-${var.project}-db-subnet-group"
+  })
+}

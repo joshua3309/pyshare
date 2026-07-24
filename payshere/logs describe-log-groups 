@@ -1,0 +1,53 @@
+{
+    "logGroups": [
+        {
+            "logGroupName": "/aws/ecs/containerinsights/dev-cluster/performance",
+            "creationTime": 1774363395025,
+            "retentionInDays": 1,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-east-1:033481624720:log-group:/aws/ecs/containerinsights/dev-cluster/performance:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:033481624720:log-group:/aws/ecs/containerinsights/dev-cluster/performance"
+        },
+        {
+            "logGroupName": "/aws/ecs/containerinsights/prod-payshere-cluster/performance",
+            "creationTime": 1784584849481,
+            "retentionInDays": 1,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-east-1:033481624720:log-group:/aws/ecs/containerinsights/prod-payshere-cluster/performance:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:033481624720:log-group:/aws/ecs/containerinsights/prod-payshere-cluster/performance"
+        },
+        {
+            "logGroupName": "/ecs/prod-payshere",
+            "creationTime": 1784745616967,
+            "retentionInDays": 30,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-east-1:033481624720:log-group:/ecs/prod-payshere:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:033481624720:log-group:/ecs/prod-payshere"
+        },
+        {
+            "logGroupName": "prod-payshere-ecs_cloudwatch-log-group",
+            "creationTime": 1784745612467,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-east-1:033481624720:log-group:prod-payshere-ecs_cloudwatch-log-group:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:033481624720:log-group:prod-payshere-ecs_cloudwatch-log-group"
+        },
+        {
+            "logGroupName": "prod-payshere-microservice_app",
+            "creationTime": 1784745615802,
+            "retentionInDays": 90,
+            "metricFilterCount": 4,
+            "arn": "arn:aws:logs:us-east-1:033481624720:log-group:prod-payshere-microservice_app:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:033481624720:log-group:prod-payshere-microservice_app"
+        }
+    ]
+}

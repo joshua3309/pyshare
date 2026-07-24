@@ -103,3 +103,57 @@ variable "deployment_maximum_percent" {
   type        = number
   default     = 200
 }
+
+variable "enable_service_connect" {
+
+  type    = bool
+
+  default = false
+
+}
+
+variable "service_connect_namespace" {
+
+  type = string
+
+  default = null
+
+}
+
+variable "service_connect_dns_name" {
+
+  type = string
+
+  default = null
+
+}
+
+variable "service_connect_discovery_name" {
+
+  type = string
+
+  default = null
+
+}
+
+variable "service_connect_port_name" {
+
+  type = string
+
+  default = "http"
+
+}
+
+variable "service_connect_port" {
+
+  type = number
+
+  default = null
+
+}
+
+variable "launch_type" {
+  description = "Launch type of the ECS service"
+  type        = string
+  default     = "EC2"
+}

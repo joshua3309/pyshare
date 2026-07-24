@@ -34,8 +34,8 @@ resource "aws_cloudwatch_metric_alarm" "target_5xx" {
   alarm_actions = [var.alarm_sns_topic_arn]
 }
 
-resource "aws_cloudwatch_metric_alarm" "posts_unhealthy_hosts" {
-  alarm_name          = "${var.env}-${var.project}-posts-unhealthy-hosts"
+resource "aws_cloudwatch_metric_alarm" "admin_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-admin-unhealthy-hosts"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "UnHealthyHostCount"
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_metric_alarm" "posts_unhealthy_hosts" {
 
   dimensions = {
     LoadBalancer = aws_lb.this.arn_suffix
-    TargetGroup  = aws_lb_target_group.posts.arn_suffix
+    TargetGroup  = aws_lb_target_group.admin.arn_suffix
   }
 
   treat_missing_data = "notBreaching"
@@ -55,8 +55,8 @@ resource "aws_cloudwatch_metric_alarm" "posts_unhealthy_hosts" {
   alarm_actions = [var.alarm_sns_topic_arn]
 }
 
-resource "aws_cloudwatch_metric_alarm" "threads_unhealthy_hosts" {
-  alarm_name          = "${var.env}-${var.project}-posts-unhealthy-hosts"
+resource "aws_cloudwatch_metric_alarm" "web_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-web-unhealthy-hosts"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "UnHealthyHostCount"
@@ -68,7 +68,7 @@ resource "aws_cloudwatch_metric_alarm" "threads_unhealthy_hosts" {
 
   dimensions = {
     LoadBalancer = aws_lb.this.arn_suffix
-    TargetGroup  = aws_lb_target_group.threads.arn_suffix
+    TargetGroup  = aws_lb_target_group.web.arn_suffix
   }
 
   treat_missing_data = "notBreaching"
@@ -76,8 +76,8 @@ resource "aws_cloudwatch_metric_alarm" "threads_unhealthy_hosts" {
   alarm_actions = [var.alarm_sns_topic_arn]
 }
 
-resource "aws_cloudwatch_metric_alarm" "users_unhealthy_hosts" {
-  alarm_name          = "${var.env}-${var.project}-users-unhealthy-hosts"
+resource "aws_cloudwatch_metric_alarm" "user_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-user-unhealthy-hosts"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "UnHealthyHostCount"
@@ -89,7 +89,7 @@ resource "aws_cloudwatch_metric_alarm" "users_unhealthy_hosts" {
 
   dimensions = {
     LoadBalancer = aws_lb.this.arn_suffix
-    TargetGroup  = aws_lb_target_group.users.arn_suffix
+    TargetGroup  = aws_lb_target_group.user.arn_suffix
   }
 
   treat_missing_data = "notBreaching"
@@ -97,8 +97,134 @@ resource "aws_cloudwatch_metric_alarm" "users_unhealthy_hosts" {
   alarm_actions = [var.alarm_sns_topic_arn]
 }
 
-resource "aws_cloudwatch_metric_alarm" "threads_high_response_time" {
-  alarm_name          = "${var.env}-${var.project}threads-high-response-time"
+resource "aws_cloudwatch_metric_alarm" "auth_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-auth-unhealthy-hosts"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+  datapoints_to_alarm = 1
+
+  dimensions = {
+    LoadBalancer = aws_lb.this.arn_suffix
+    TargetGroup  = aws_lb_target_group.auth.arn_suffix
+  }
+
+  treat_missing_data = "notBreaching"
+
+  alarm_actions = [var.alarm_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "payment_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-payment-unhealthy-hosts"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+  datapoints_to_alarm = 1
+
+  dimensions = {
+    LoadBalancer = aws_lb.this.arn_suffix
+    TargetGroup  = aws_lb_target_group.payment.arn_suffix
+  }
+
+  treat_missing_data = "notBreaching"
+
+  alarm_actions = [var.alarm_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "transaction_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-transaction-unhealthy-hosts"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+  datapoints_to_alarm = 1
+
+  dimensions = {
+    LoadBalancer = aws_lb.this.arn_suffix
+    TargetGroup  = aws_lb_target_group.transaction.arn_suffix
+  }
+
+  treat_missing_data = "notBreaching"
+
+  alarm_actions = [var.alarm_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "wallet_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-wallet-unhealthy-hosts"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+  datapoints_to_alarm = 1
+
+  dimensions = {
+    LoadBalancer = aws_lb.this.arn_suffix
+    TargetGroup  = aws_lb_target_group.wallet.arn_suffix
+  }
+
+  treat_missing_data = "notBreaching"
+
+  alarm_actions = [var.alarm_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "billing_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-billing-unhealthy-hosts"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+  datapoints_to_alarm = 1
+
+  dimensions = {
+    LoadBalancer = aws_lb.this.arn_suffix
+    TargetGroup  = aws_lb_target_group.billing.arn_suffix
+  }
+
+  treat_missing_data = "notBreaching"
+
+  alarm_actions = [var.alarm_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "notification_unhealthy_hosts" {
+  alarm_name          = "${var.env}-${var.project}-notification-unhealthy-hosts"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+  datapoints_to_alarm = 1
+
+  dimensions = {
+    LoadBalancer = aws_lb.this.arn_suffix
+    TargetGroup  = aws_lb_target_group.notification.arn_suffix
+  }
+
+  treat_missing_data = "notBreaching"
+
+  alarm_actions = [var.alarm_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "web_high_response_time" {
+  alarm_name          = "${var.env}-${var.project}web-high-response-time"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
   metric_name         = "TargetResponseTime"
@@ -110,7 +236,7 @@ resource "aws_cloudwatch_metric_alarm" "threads_high_response_time" {
 
   dimensions = {
     LoadBalancer = aws_lb.this.arn_suffix
-    TargetGroup  = aws_lb_target_group.threads.arn_suffix
+    TargetGroup  = aws_lb_target_group.web.arn_suffix
   }
 
   treat_missing_data = "notBreaching"
@@ -119,8 +245,8 @@ resource "aws_cloudwatch_metric_alarm" "threads_high_response_time" {
 }
 
 
-resource "aws_cloudwatch_metric_alarm" "posts_high_response_time" {
-  alarm_name          = "${var.env}-${var.project}posts-high-response-time"
+resource "aws_cloudwatch_metric_alarm" "auth_high_response_time" {
+  alarm_name          = "${var.env}-${var.project}auth-high-response-time"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
   metric_name         = "TargetResponseTime"
@@ -132,7 +258,7 @@ resource "aws_cloudwatch_metric_alarm" "posts_high_response_time" {
 
   dimensions = {
     LoadBalancer = aws_lb.this.arn_suffix
-    TargetGroup  = aws_lb_target_group.posts.arn_suffix
+    TargetGroup  = aws_lb_target_group.auth.arn_suffix
   }
 
   treat_missing_data = "notBreaching"
@@ -141,8 +267,8 @@ resource "aws_cloudwatch_metric_alarm" "posts_high_response_time" {
 }
 
 
-resource "aws_cloudwatch_metric_alarm" "users_high_response_time" {
-  alarm_name          = "${var.env}-${var.project}users-high-response-time"
+resource "aws_cloudwatch_metric_alarm" "user_high_response_time" {
+  alarm_name          = "${var.env}-${var.project}user-high-response-time"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
   metric_name         = "TargetResponseTime"
@@ -154,7 +280,7 @@ resource "aws_cloudwatch_metric_alarm" "users_high_response_time" {
 
   dimensions = {
     LoadBalancer = aws_lb.this.arn_suffix
-    TargetGroup  = aws_lb_target_group.users.arn_suffix
+    TargetGroup  = aws_lb_target_group.user.arn_suffix
   }
 
   treat_missing_data = "notBreaching"

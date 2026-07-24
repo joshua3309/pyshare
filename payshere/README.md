@@ -183,6 +183,7 @@ cp backend/.env.example backend/.env
 cd backend
 npx prisma generate --schema prisma/schema.prisma
 npx prisma migrate dev --schema prisma/schema.prisma --name init
+npm install bcryptjs
 npm run prisma:seed
 ```
 

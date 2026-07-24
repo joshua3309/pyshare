@@ -26,7 +26,7 @@ module "cloudwatch" {
   log_streams          = [""]
   app_name             = "microservice_app"
   alarm_sns_topic_name = "microservice-prod-alerts"
-  alarm_sns_topic_arn = module.sns.topic_arn
+  alarm_sns_topic_arn  = module.sns.topic_arn
 
   tags = local.common_tags
 }
@@ -79,7 +79,7 @@ module "alb" {
   waf_rules_override_action = "count"
   custom_waf_rules          = true
   waf_secret_header_value   = "some_secret"
-  alarm_sns_topic_arn = module.sns.topic_arn
+  alarm_sns_topic_arn       = module.sns.topic_arn
 
   create_aliases = [
     {
@@ -129,6 +129,8 @@ module "ecs_cluster" {
   project    = var.project
   region     = var.region
 
+  enable_service_connect = true
+
   tags = {
     Environment = "prod"
     Project     = "microservice"
@@ -136,6 +138,37 @@ module "ecs_cluster" {
   }
 
 }
+
+module "rds" {
+  source = "../../modules/rds"
+
+  account_id = var.account_id
+  env        = var.env
+  project    = var.project
+  region     = var.region
+
+  service_name = "payshere" # or specific service name
+
+  db_subnet_group_name = module.network.db_subnet_group_name
+  vpc_security_group_ids = [
+    module.security.rds_security_group_id
+  ]
+
+  engine            = "postgres"
+  engine_version    = "16"
+  instance_class    = "db.t3.medium"
+  allocated_storage = 50
+  db_name           = "paysphere"
+  db_username       = var.db_username
+  db_password       = var.db_password
+
+  multi_az            = true
+  deletion_protection = false
+  skip_final_snapshot = true
+
+  tags = var.tags
+}
+
 
 
 

@@ -16,32 +16,10 @@ resource "aws_wafv2_web_acl" "aws_managed_webacl" {
     }
 
     statement {
-      and_statement {
-        statement {
-          ip_set_reference_statement {
-            arn = aws_wafv2_ip_set.ips_from_servers_to_be_allowed.arn
-          }
-        }
-
-        statement {
-          byte_match_statement {
-            positional_constraint = "EXACTLY"
-            search_string         = var.waf_secret_header_value
-
-            text_transformation {
-              priority = 0
-              type     = "NONE"
-            }
-
-            field_to_match {
-              single_header {
-                name = "waf-secret"
-              }
-            }
-          }
-        }
+      ip_set_reference_statement {
+        arn = aws_wafv2_ip_set.ips_from_servers_to_be_allowed.arn
       }
-    }  
+    }
 
     visibility_config {
       cloudwatch_metrics_enabled = true
@@ -102,66 +80,6 @@ resource "aws_wafv2_web_acl" "aws_managed_webacl" {
       sampled_requests_enabled   = true
     }
   }  
-
-  dynamic "rule" {
-    for_each = var.rate_subdomain_rules
-
-    content {
-      name     = "${var.env}-${var.project}-${rule.value.name}"
-      priority = rule.value.priority
-
-      action {
-        dynamic "allow" {
-          for_each = rule.value.action == "allow" ? [1] : []
-          content {}
-        }
-
-        dynamic "count" {
-          for_each = rule.value.action == "count" ? [1] : []
-          content {}
-        }
-
-        dynamic "block" {
-          for_each = rule.value.action == "block" ? [1] : []
-          content {}
-        }
-      }
-
-      statement {
-        rate_based_statement {
-          aggregate_key_type  = "IP"
-          limit               = rule.value.limit
-          evaluation_window_sec = rule.value.window
-
-          scope_down_statement {
-            byte_match_statement {
-              
-              positional_constraint = "STARTS_WITH"
-              search_string         = rule.value.domain
-
-              field_to_match {
-                single_header {
-                  name = "host"
-                }
-              }
-
-              text_transformation {
-                priority = 0
-                type     = "LOWERCASE"
-              }
-            }
-          }
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = rule.value.name
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
 
   dynamic "rule" {
     for_each = var.rate_url_rules
